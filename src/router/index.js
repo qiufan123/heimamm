@@ -8,12 +8,15 @@ import Login from '../views/login/index.vue'
 import UseElement from '../views/useElement/index.vue'
 // 使用 vue-router
 Vue.use(VueRouter)
-
 // 创建一个新的 vue-router 对象
 var router = new VueRouter({
     // 添加路由的规则
     routes: [
+        // 路由重定向
+        { path: '/', redirect: '/login' },
+        // 登录
         { path: '/login', component: Login },
+        // 使用 element 的路由规则
         { path: '/useElement', component: UseElement}
     ]
 })

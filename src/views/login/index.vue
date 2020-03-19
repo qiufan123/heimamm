@@ -22,7 +22,7 @@
               <el-input prefix-icon="el-icon-key" placeholder="请输入验证码" v-model="form.logincode"></el-input>
             </el-col>
             <el-col :span="8">
-              <img class="loginCode" src="../../assets/login_captcha.png" alt="">
+              <img @click="changeImg" class="loginCode" :src="imgUrl" alt="">
             </el-col>
           </el-row>
         </el-form-item>
@@ -49,9 +49,24 @@
 <script>
 // 导入注册组件
 import register from './components/register.vue'
+// 导入自定义校验规则
+import { checkphone } from '@/utils/mycheck.js'
+// // 注册一个验证手机号的方法
+// const checkphone = function (rule, value, callback) {
+//   // 定义正则
+//   var reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+//   // 验证
+//   if (reg.test(value)) {
+//     callback()
+//   } else {
+//     callback(new Error('手机号验证失败'))
+//   }
+// }
 export default {
   data() {
     return {
+      // 登录验证码路径
+      imgUrl: process.env.VUE_APP_URL + `/captcha?type=login&t=` + Date.now(),
       form: {
         // 手机号
         phone: '',
@@ -64,10 +79,10 @@ export default {
       },
       // 当前页面上 form 的验证规则
       rules: {
-        phone:[
-         { required: true, message: '号码不能为空', trigger: 'blur' },
-          // 长度
-          { min: 5, max: 10, message: '长度在 11 个字符', trigger: 'blur' }
+        phone: [
+          { required: true, message: '手机号不能为空', trigger: 'blur' },
+          // 自定义规则
+          { validator: checkphone, trigger: 'blur' }
         ],
         password: [
           // 非空：
@@ -89,6 +104,10 @@ export default {
     }
   },
   methods: {
+    // 切换验证码
+    changeImg () {
+      this.imgUrl = process.env.VUE_APP_URL + `/captcha?type=login&t=` + Date.now()
+    },
     // 点击登录按钮时触发
     onSubmit() {
       // 调用 form 的验证方法
@@ -107,7 +126,7 @@ export default {
       })
     },
     // 打开注册面板
-    openregister () {
+    openregister() {
       // 使用 $refs 传参的方式将注册组件中的属性进行修改
       this.$refs.register.dialogFormVisible = true
     }
@@ -187,4 +206,3 @@ export default {
   }
 }
 </style>
-
